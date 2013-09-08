@@ -1,5 +1,5 @@
 <?php
-
+   
     $dbConfig = array();
     $dbConfig['SERVER'] = 'localhost';
     $dbConfig['DB'] =  '';
