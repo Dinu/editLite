@@ -19,7 +19,6 @@ unset($dbConfig);
 
 
 $tables = EditLite::getTables();
-$colName = 'Tables_in_' . EL_DATABASE;
 
 if (isset($_GET['table'])) $table = $_GET['table'];
 else $table = $tables[0]->$colName;

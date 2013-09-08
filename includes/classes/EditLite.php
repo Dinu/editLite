@@ -35,7 +35,7 @@ class EditLite {
     {
         global $db;
         
-        $sql = "SHOW TABLES FROM " . EL_DATABASE;
+        $sql = "SHOW TABLE STATUS FROM " . EL_DATABASE;
         return $db->get_results($sql);
     }
     
@@ -104,13 +104,15 @@ class EditLite {
      * Select single row by PK
      *
      * @param  string $key      Primary Key Value (if table has PK) or row index
-     * @return object           Mysql object if row found / False if nothing
+     * @return Mixed            Mysql object if row found / False if nothing
      * @throws None
      */
     public function getRow($key)
     {
         global $db;
         
+		if ($key == '') return false; // Don't come to play if you don't have a key kiddo
+		
         $sql = "SELECT * FROM $this->table";
         
         if ($this->pk != '') {
@@ -144,26 +146,67 @@ class EditLite {
         
         if ($key == '') $sql = "INSERT INTO $this->table SET $sql";
         else {
-            if ($this->pk != '') $sql = "UPDATE $this->table SET $sql WHERE $this->pk = '$key'";
-            else {
-                $row = $this->getRow($key);
-                $where = '';
-                if ($row) {
-                    foreach ($this->columns as $c) {
-                        $field = $c->Field;
-                        $val = $row->$field;
-                        if ($where != '') $where .= ' AND ';
-                        $where .= "$c->Field = '$val'";
-                    }
-                }
-                $sql = "UPDATE $this->table SET $sql WHERE $where";
-            }
+			$where = $this->getWhereClause($key);
+            $sql = "UPDATE $this->table SET $sql $where";
         }
         
         $db->query($sql);
         return $db->rows_affected;
     }
     
+	/**
+	 * Delete Row
+	 * 
+	 * Delete row based on Primary Key or Row Index
+	 * 
+	 * @param mixed $key	PK or Row Index
+	 * @return boolean		true or false on success/failure
+	 * @throws none
+	 */
+	public function delete($key)
+	{
+		global $db;
+
+		$where = $this->getWhereClause($key);
+		if ($where != '') {
+			$sql = "DELETE FROM $this->table $where";
+			$db->query($sql);
+			if ($db->rows_affected > 0) return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Get WHERE clause based on row index
+	 * 
+	 * To be used in CRUD Operations
+	 * 
+	 * @param mixed $key	PK or Row Index
+	 * @return string		MySQL WHERE Clause
+	 * @throws none
+	 */
+	protected function getWhereClause($key)
+	{
+		$where = '';
+		
+        if ($this->pk != '') $where = "WHERE $this->pk = '$key'";
+        else {
+            $row = $this->getRow($key);
+            if ($row) {
+                foreach ($this->columns as $c) {
+                    $field = $c->Field;
+                    $val = $row->$field;
+                    if ($where != '') $where .= ' AND ';
+                    $where .= "$c->Field = '$val'";
+                }
+            }
+			$where = "WHERE $where";
+		}
+
+		return $where;
+	} 
+
     /**
      * Get Prettified Name
      *
@@ -216,8 +259,10 @@ class EditLite {
     public static function getControl($colInfo, $row, $return = false)
     {
         $field = $colInfo->Field;
-        $val = $row->$field;
         
+		if ($row) $val = $row->$field;
+        else $val = '';
+		
         switch ($colInfo->Type) {
             case 'mediumtext':
             case 'longtext':

@@ -48,7 +48,9 @@
                             <?php if ($tables) {
                                 $i = 1;
                                 foreach ($tables as $t) { ?>
-                                    <li class="<?php echo ($table == $t->$colName) ? $table : (($table == '') && ($i == 1)) ? 'active' : '';?>"><a href="index.php?table=<?php echo $t->$colName;?>"><?php echo EditLite::getNiceName($t->$colName);?></a></li>
+                                    <li class="<?php echo ($table == $t->Name) ? $table : (($table == '') && ($i == 1)) ? 'active' : '';?>">
+										<a href="index.php?table=<?php echo $t->Name;?>"><?php echo EditLite::getNiceName($t->Name);?> <span class="badge pull-right"><?php echo $t->Rows;?></span></a>
+									</li>
                                     <?php
                                     $i++;
                                 }

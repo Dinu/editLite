@@ -2,10 +2,10 @@
 
 require 'includes/init.php';
 
-if ((isset($_GET['row'])) && (isset($_GET['table']))) {
+if (isset($_GET['table'])) {
     
-    $table = editLite::safeText($_GET['table']);
-    $key = editLite::safeText($_GET['row']);
+	$key = '';
+	if (isset($_GET['row'])) $key = editLite::safeText($_GET['row']);
     
     if (isset($_POST['save'])) {
         if ($editLite->saveEdits($key)) {
@@ -15,6 +15,6 @@ if ((isset($_GET['row'])) && (isset($_GET['table']))) {
         }
     }
     
-    $row = $editLite->getRow($key);
+	$row = $editLite->getRow($key);
     
 } else die(header('location: index.php'));

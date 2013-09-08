@@ -11,8 +11,11 @@
                         <h1><?php echo editLite::getNiceName($table);?></h1>
                         <div class="btn-group pull-right">
                             <a href="index.php?table=<?php echo $table;?>&amp;download&amp;type=csv" class="btn btn-default"><i class="glyphicon glyphicon-download"></i> Download</a>
+							<a href="edit.php?table=<?php echo $table;?>" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Add New</a>
                         </div>
                         
+						<?php echo (isset($alert)) ? $alert : '';?>
+						
                     </div>
 
                     <table class="table table-hover">
@@ -37,7 +40,12 @@
                                     <td>
                                         <div class="btn-group">
                                             <a class="btn btn-default" href="edit.php?table=<?php echo $table;?>&row=<?php echo ($pk != '') ? $r->$pk : $i;?>" title="Edit Row"><i class="glyphicon glyphicon-pencil"></i></a>
-                                            <a class="btn btn-default" href="#" title="Delete Row"><i class="glyphicon glyphicon-trash"></i></a>
+                                            <a class="btn btn-default"
+                                               href="index.php?table=<?php echo $table;?>&amp;delete=<?php echo ($pk != '') ? $r->$pk : $i;?>"
+                                               title="Delete Row"
+                                               onclick="if (confirm('Are you sure you want to delete this row? \n\n No undo on this one')) return true; else return false;">
+                                                    <i class="glyphicon glyphicon-trash"></i>
+                                            </a>
                                         </div>
                                     </td>
                                     <?php foreach ($editLite->columns as $c) { ?>

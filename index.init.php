@@ -16,4 +16,13 @@ if (isset($_GET['download'])) {
 			break;
 	}
 }
+
+if (isset($_GET['delete'])) {
+	$key = EditLite::safeText($_GET['delete']);
+	if ($editLite->delete($key))
+		$alert = '<div class="alert alert-success">Row deleted!</div>';
+	else 
+		$alert = '<div class="alert alert-danger"><b>Oops!</b> Something went wrong while deleting this record...</div>';;
+	
+}
 $editLite->loadRows();
