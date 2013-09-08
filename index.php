@@ -10,7 +10,7 @@
                        
                         <h1><?php echo editLite::getNiceName($table);?></h1>
                         <div class="btn-group pull-right">
-                            <a href="#" class="btn btn-default"><i class="glyphicon glyphicon-download"></i> Download</a>
+                            <a href="index.php?table=<?php echo $table;?>&amp;download&amp;type=csv" class="btn btn-default"><i class="glyphicon glyphicon-download"></i> Download</a>
                         </div>
                         
                     </div>

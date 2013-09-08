@@ -233,4 +233,42 @@ class EditLite {
         else echo $html;
     }
     
+    /**
+     * Get CSV For Table Data
+     *
+     * @param none
+     * @return string   CSV String Data
+     */
+    public function getCSV()
+    {
+        global $db;
+        
+        $csv = '';
+        
+        $newLine = true;
+        foreach ($this->columns as $c) {
+            if ($newLine) $newLine = false;
+            else $csv .= ',';
+            $csv .= '"' . $c->Field . '"';
+        }
+
+        $sql = "SELECT * FROM $this->table";
+        $results = $db->get_results($sql);
+        if ($results) {
+            foreach ($results as $r) {
+                
+				$newLine = true;
+				$csv .= "\n";
+				
+				foreach ($this->columns as $c) {
+		            if ($newLine) $newLine = false;
+		            else $csv .= ',';
+					$field = $c->Field;
+		            $csv .= '"' . $r->$field . '"';
+				}
+            }
+        }
+		
+		return $csv;
+    }
 }
